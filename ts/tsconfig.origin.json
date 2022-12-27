@@ -1,0 +1,53 @@
+{
+	// "compileOnSave": false,
+	"include": ["src"],
+	"compilerOptions": {
+		// work in strict typescript mode
+		"rootDir": "src",
+		// Compile to separate files
+		// "outDir": "build",
+		
+		// Compile to single file
+		"module": "commonjs",
+		"removeComments": true,
+		"outFile": "build/build.js",
+		
+		"skipLibCheck": true,
+		"strict": true,
+
+		"alwaysStrict": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
+		"useUnknownInCatchVariables": true,
+
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals" : true,
+		"noUnusedParameters": true,
+		// "downlevelIteration": true,
+
+		"composite": true,
+
+		// "allowSyntheticDefaultImports": true,
+		// "removeComments": false,
+		"preserveConstEnums": false,
+		"sourceMap": true,
+
+		// "baseUrl": ".",
+		"moduleResolution": "node",
+
+		"target": "es5",
+		// "module": "esnext",
+
+		// "noEmit": true,
+	
+		// "allowJs": true,
+		"lib": ["dom", "es2015", "es2016"]
+	},
+	"exclude": ["node_modules", "node_modules/*"]
+}
