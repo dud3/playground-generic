@@ -1,14 +1,26 @@
 {
-  "include": ["src"],
   "compilerOptions": {
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "paths": {
+      "~canvas/*": ["src/canvas/*"],
+      "~drawable/*": ["src/drawable/*"],
+      "~entity/*": ["src/entity/*"],
+      "~entityManager/*": ["src/entityManager/*"],
+      "~math/*": ["src/math/*"],
+      "~primitive/*": ["src/primitive/*"],
+      "~test/*": ["src/test/*"],
+      "~util/*": ["src/util/*"]
+    },
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es5",
-    // "allowJs": true,
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "files": ["src/index.ts"],
-  "exclude": ["node_modules", "node_modules/*"]
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": ["node_modules", "node_modules/*", "dist/**/*", "public/**/*"]
 }

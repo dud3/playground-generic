@@ -2,11 +2,13 @@
 
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
 const isProduction = process.env.NODE_ENV == "production";
+const tsconfig = require("./tsconfig.json");
+
+console.log(path.resolve(__dirname, "src/canvas/"));
 
 const config = {
-  entry: "./src/index.ts",
+  entry: "./src/main.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
   },
@@ -17,15 +19,14 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",
-    }),
-
+    })
     // Add your plugins here
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/i,
+        test: /\.(ts)$/i,
         loader: "ts-loader",
         exclude: ["/node_modules/"],
       },
@@ -39,7 +40,15 @@ const config = {
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js", "..."],
+    extensions: [".ts", ".js", "..."],
+    alias: {
+      // Path alias from tsconfig
+      ...Object.keys(tsconfig.compilerOptions.paths)
+        .map((k) => ({[k.replaceAll("/*", "")]: tsconfig.compilerOptions.paths[k]
+          .map(e => e.replace("/*",""))
+          .map(e => path.resolve(__dirname, e))[0] }))
+        .reduce((s,c) => ({...s,...c}), {})
+    }
   },
 };
 
