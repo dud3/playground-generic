@@ -1,21 +1,28 @@
 import { Entity } from "~entity/Entity";
+import { Vec3 } from "~math/Vector";
+import { Space } from "~math/space/Space";
 
-export interface Canvas {
+export interface Canvas<T extends Vec3> {
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
+	space: Space;
 };
 
-const clock = {
-	start: 0
-};
+let delay: ReturnType<typeof setTimeout>;
 
-export class Canvas implements Canvas {
+export class Canvas<T extends Vec3 = Vec3> implements Canvas<T> {
 	entities: Entity[] = [];
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
+	space: Space;
 
 	clock: {
 		start: number;
+		upf: number;
+		fc: number;
+		dt: number;
+		est: number;
+		clear: boolean;
 	};
 
 	constructor(id: string) {
@@ -26,7 +33,12 @@ export class Canvas implements Canvas {
 		}
 
 		this.clock = {
-			start: undefined
+			start: undefined,
+			upf: 1,
+			fc: 0,
+			dt: 0,
+			est: 0,
+			clear: true
 		};
 	}
 
@@ -38,16 +50,40 @@ export class Canvas implements Canvas {
 		this.entities = this.entities.concat(entities);
 	}
 
-	private _step(time: number) {
-		if (this.clock.start === undefined) { this.clock.start = time; }
-		const dt = time - this.clock.start;
+	private async _step(time: number) {
+		this.clock.fc += 1;
 
-		this.entities.forEach((e) => { e.update(dt, dt); e.render(dt); })
+		if (this.clock.fc % this.clock.upf != 0) {
+			window.requestAnimationFrame(this._step.bind(this));
+		} else {
+			const dt = this.clock.dt = time - (this.clock.start ?? 0);
+			this.clock.start = time;
+			this.clock.fc = 0;
 
-		window.requestAnimationFrame(this._step.bind(this));
+			if (this.clock.clear)
+				this.clear();
+
+			this.entities.forEach((e) => { this.main(e, dt); });
+
+			window.requestAnimationFrame(this._step.bind(this));
+		}
 	}
 
 	tick() {
 		window.requestAnimationFrame(this._step.bind(this));
+	}
+
+	update(entity: Entity, dt: number) {
+		entity.update(dt, dt, entity);
+	}
+
+	render(entity: Entity, dt: number) {
+		entity.space.render(this);
+		entity.render(this, dt, entity);
+	}
+
+	main(entity: Entity, dt: number) {
+		this.update(entity, dt);
+		this.render(entity, dt);
 	}
 }
